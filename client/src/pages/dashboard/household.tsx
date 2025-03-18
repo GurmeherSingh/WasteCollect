@@ -48,7 +48,7 @@ export default function HouseholdDashboard() {
         </div>
 
         <div className="flex justify-end mb-4">
-          <Link href="/marketplace">
+          <Link href="/dashboard/marketplace">
             <Button className="bg-green-500 hover:bg-green-600">
               View Rewards Marketplace
             </Button>
