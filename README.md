@@ -47,7 +47,8 @@ This application was created as part of my startup idea for **ENTR210: Intro to 
    ```
 3. Run the application:
    ```sh
-   npm run dev  # For Vite projects
+   npm run dev
+   Visit http://localhost:5000 on your browser to use
    ```
 
 ## 🤝 Contributing
