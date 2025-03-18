@@ -108,7 +108,7 @@ export default function MarketplaceDashboard() {
                         Redeem
                       </Button>
                     </div>
-                    <div className="text-sm text-green-600">Valid until Dec 31, 2024</div>
+                    <div className="text-sm text-green-600">Valid until Dec 31, 2025</div>
                   </div>
                 </CardContent>
               </Card>
