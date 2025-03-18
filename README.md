@@ -13,7 +13,7 @@ WasteCollect is a web application that helps manage waste collection and recycli
 - **📅 Schedule Waste Collection**: Users can request waste pickups easily.
 - **📍 Track Pickup Status**: Monitor the progress of scheduled waste pickups.
 - **🎯 Earn Points for Recycling**: Users receive points for their recycling efforts.
-- **🎁 Redeem Rewards**: Points can be exchanged for rewards from brands like Amazon, Target, etc.
+- **🎁 Redeem Rewards**: Points can be exchanged for rewards from top brands.
 - **🏆 Achievements System**: Get recognized for being eco-friendly with badges and achievements.
 
 ## 🎯 Purpose
@@ -38,8 +38,8 @@ This application was created as part of my startup idea for **ENTR210: Intro to 
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repo/wastecollect.git
-   cd wastecollect
+   git clone https://github.com/GurmeherSingh/WasteCollect.git
+   cd WasteCollect
    ```
 2. Install dependencies:
    ```sh
