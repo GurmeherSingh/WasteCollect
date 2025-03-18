@@ -157,7 +157,7 @@ export default function AuthPage() {
           </CardContent>
         </Card>
       </div>
-      <div className="hidden md:block bg-[url('https://images.unsplash.com/photo-1579028017684-1c828c18b5f6')] bg-cover bg-center relative">
+      <div className="hidden md:block bg-[url('https://images.unsplash.com/photo-1493246507139-91e8fad9978e')] bg-cover bg-center relative">
         <div className="absolute inset-0 bg-primary/20 backdrop-blur-sm" />
         <div className="relative h-full flex items-center justify-center p-8">
           <div className="bg-white/90 p-8 rounded-lg max-w-lg">
