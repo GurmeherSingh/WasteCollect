@@ -25,7 +25,7 @@ export const pickups = pgTable("pickups", {
   userId: integer("user_id").notNull(),
   collectorId: integer("collector_id"),
   status: text("status", { enum: ['scheduled', 'completed', 'cancelled'] }).notNull(),
-  scheduledDate: timestamp("scheduled_date").notNull(),
+  scheduledDate: text("scheduled_date").notNull(),
   wasteType: text("waste_type").notNull(),
   quantity: integer("quantity").notNull(),
 });

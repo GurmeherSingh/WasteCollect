@@ -22,7 +22,7 @@ export function SchedulePickupDialog() {
       await apiRequest("POST", "/api/pickups", {
         wasteType,
         quantity: parseInt(quantity),
-        scheduledDate: new Date(date).toISOString(),
+        scheduledDate: date,
         status: "scheduled"
       });
       
