@@ -13,7 +13,7 @@ import { useState } from "react";
 const BRANDS = [
   { id: 1, name: "Nike", logo: "https://cdn-icons-png.flaticon.com/512/732/732084.png" },
   { id: 2, name: "Adidas", logo: "https://cdn-icons-png.flaticon.com/512/731/731962.png" },
-  { id: 3, name: "Puma", logo: "https://cdn-icons-png.flaticon.com/512/731/731966.png" },
+  { id: 3, name: "Puma", logo: "https://www.cleanpng.com/png-puma-herzogenaurach-clothing-2359724/download.html" },
   { id: 4, name: "iHerb", logo: "https://cdn-icons-png.flaticon.com/512/2382/2382533.png" },
   { id: 5, name: "McDonald's", logo: "https://cdn-icons-png.flaticon.com/512/732/732217.png" },
   { id: 6, name: "Starbucks", logo: "https://cdn-icons-png.flaticon.com/512/732/732242.png" },
