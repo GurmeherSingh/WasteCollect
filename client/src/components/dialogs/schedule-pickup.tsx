@@ -11,6 +11,7 @@ export function SchedulePickupDialog() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [wasteType, setWasteType] = useState("");
+  const [customWasteType, setCustomWasteType] = useState("");
   const [quantity, setQuantity] = useState("");
   const [date, setDate] = useState("");
 
@@ -20,7 +21,7 @@ export function SchedulePickupDialog() {
     
     try {
       await apiRequest("POST", "/api/pickups", {
-        wasteType,
+        wasteType: wasteType === 'custom' ? customWasteType : wasteType,
         quantity: parseInt(quantity),
         scheduledDate: date,
         status: "scheduled"
@@ -45,18 +46,29 @@ export function SchedulePickupDialog() {
           <DialogTitle>Schedule a Pickup</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Select value={wasteType} onValueChange={setWasteType} required>
-            <SelectTrigger>
-              <SelectValue placeholder="Select waste type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="plastic">Plastic</SelectItem>
-              <SelectItem value="paper">Paper</SelectItem>
-              <SelectItem value="metal">Metal</SelectItem>
-              <SelectItem value="glass">Glass</SelectItem>
-              <SelectItem value="electronics">Electronics</SelectItem>
-            </SelectContent>
-          </Select>
+          {wasteType === 'custom' ? (
+            <Input
+              placeholder="Enter custom waste type"
+              value={customWasteType}
+              onChange={(e) => setCustomWasteType(e.target.value)}
+              required
+            />
+          ) : (
+            <Select value={wasteType} onValueChange={setWasteType} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Select waste type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="plastic">Plastic</SelectItem>
+                <SelectItem value="paper">Paper</SelectItem>
+                <SelectItem value="metal">Metal</SelectItem>
+                <SelectItem value="glass">Glass</SelectItem>
+                <SelectItem value="electronics">Electronics</SelectItem>
+                <SelectItem value="mix">MIX</SelectItem>
+                <SelectItem value="custom">Custom...</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
           
           <Input
             type="number"
