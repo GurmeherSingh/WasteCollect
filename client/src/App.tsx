@@ -10,6 +10,7 @@ import HouseholdDashboard from "@/pages/dashboard/household";
 import CollectorDashboard from "@/pages/dashboard/collector";
 import RecyclingDashboard from "@/pages/dashboard/recycling";
 import AdminDashboard from "@/pages/dashboard/admin";
+import MarketplaceDashboard from "@/pages/dashboard/marketplace";
 
 function Router() {
   return (
