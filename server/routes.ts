@@ -110,6 +110,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(achievements);
   });
 
+  // Marketplace routes
+  app.get("/api/marketplace", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const items = await storage.getMarketplaceItems();
+    res.json(items);
+  });
+
+  app.post("/api/marketplace/redeem/:itemId", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const item = await storage.getMarketplaceItem(parseInt(req.params.itemId));
+    if (!item) return res.sendStatus(404);
+    
+    const user = await storage.getUser(req.user.id);
+    if (user.rewardPoints < item.pointsCost) {
+      return res.status(400).json({ message: "Insufficient points" });
+    }
+
+    await storage.redeemMarketplaceItem(req.user.id, item.id);
+    res.sendStatus(200);
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

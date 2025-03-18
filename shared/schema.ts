@@ -76,4 +76,25 @@ export type User = typeof users.$inferSelect;
 export type Pickup = typeof pickups.$inferSelect;
 export type Requirement = typeof requirements.$inferSelect;
 export type PointTransaction = typeof pointTransactions.$inferSelect;
+export const marketplaceItems = pgTable("marketplace_items", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  pointsCost: integer("points_cost").notNull(),
+  imageUrl: text("image_url"),
+  stockQuantity: integer("stock_quantity").notNull(),
+});
+
+export const userRewards = pgTable("user_rewards", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  itemId: integer("item_id").notNull(),
+  redeemedAt: timestamp("redeemed_at").defaultNow().notNull(),
+});
+
+export const insertMarketplaceItemSchema = createInsertSchema(marketplaceItems);
+export const insertUserRewardSchema = createInsertSchema(userRewards);
+
 export type Achievement = typeof achievements.$inferSelect;
+export type MarketplaceItem = typeof marketplaceItems.$inferSelect;
+export type UserReward = typeof userRewards.$inferSelect;

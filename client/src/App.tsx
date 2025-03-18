@@ -19,6 +19,7 @@ function Router() {
       <ProtectedRoute path="/dashboard/collector" component={CollectorDashboard} />
       <ProtectedRoute path="/dashboard/recycling" component={RecyclingDashboard} />
       <ProtectedRoute path="/dashboard/admin" component={AdminDashboard} />
+      <ProtectedRoute path="/dashboard/marketplace" component={MarketplaceDashboard} />
       <Route path="/" component={() => <Redirect to="/auth" />} />
       <Route component={NotFound} />
     </Switch>
