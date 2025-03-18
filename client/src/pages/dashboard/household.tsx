@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Star, Calendar } from "lucide-react";
-import Link from 'next/link';
+import { Link } from "wouter";
 import { cn } from "@/lib/utils";
 import { useLocation } from "wouter";
 
@@ -48,9 +48,11 @@ export default function HouseholdDashboard() {
         </div>
 
         <div className="flex justify-end mb-4">
-          <Button asChild className="bg-green-500 hover:bg-green-600">
-            <Link to="/marketplace">View Rewards Marketplace</Link>
-          </Button>
+          <Link href="/marketplace">
+            <Button className="bg-green-500 hover:bg-green-600">
+              View Rewards Marketplace
+            </Button>
+          </Link>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
           <Card>
