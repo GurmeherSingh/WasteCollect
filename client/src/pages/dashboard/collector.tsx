@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { Button } from "@/components/ui/button";
@@ -18,15 +19,64 @@ export default function CollectorDashboard() {
     queryKey: ["/api/pickups/collector"],
   });
 
+  const { data: availablePickups } = useQuery({
+    queryKey: ["/api/pickups/available"],
+  });
+
   const updatePickupStatus = async (id: number, status: string) => {
     await apiRequest("PATCH", `/api/pickups/${id}/status`, { status });
     queryClient.invalidateQueries({ queryKey: ["/api/pickups/collector"] });
+  };
+
+  const acceptPickup = async (id: number) => {
+    await apiRequest("PATCH", `/api/pickups/${id}/assign`);
+    queryClient.invalidateQueries({ queryKey: ["/api/pickups/collector"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/pickups/available"] });
   };
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <h1 className="text-2xl font-bold">Collector Dashboard</h1>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Available Pickups</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {availablePickups?.map((pickup) => (
+                  <TableRow key={pickup.id}>
+                    <TableCell>
+                      {new Date(pickup.scheduledDate).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>Location {pickup.userId}</TableCell>
+                    <TableCell>{pickup.wasteType}</TableCell>
+                    <TableCell>{pickup.quantity} kg</TableCell>
+                    <TableCell>
+                      <Button
+                        size="sm"
+                        onClick={() => acceptPickup(pickup.id)}
+                      >
+                        Accept
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>

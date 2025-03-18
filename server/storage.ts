@@ -30,6 +30,8 @@ export interface IStorage {
     pointsAwarded: number
   ): Promise<Achievement>;
   getAchievements(userId: number): Promise<Achievement[]>;
+  getAvailablePickups(): Promise<Pickup[]>;
+  assignPickup(pickupId: number, collectorId: number): Promise<Pickup>;
 }
 
 export class MemStorage implements IStorage {
@@ -76,7 +78,7 @@ export class MemStorage implements IStorage {
 
   async createPickup(pickup: Omit<Pickup, "id">): Promise<Pickup> {
     const id = this.currentId++;
-    const newPickup: Pickup = { ...pickup, id };
+    const newPickup: Pickup = { ...pickup, id, collectorId: null }; //Added collectorId: null for new pickups
     this.pickups.set(id, newPickup);
     return newPickup;
   }
@@ -181,6 +183,18 @@ export class MemStorage implements IStorage {
     return Array.from(this.achievements.values())
       .filter(achievement => achievement.userId === userId)
       .sort((a, b) => b.unlockedAt.getTime() - a.unlockedAt.getTime());
+  }
+
+  async getAvailablePickups(): Promise<Pickup[]> {
+    return Array.from(this.pickups.values()).filter(pickup => pickup.collectorId === null);
+  }
+
+  async assignPickup(pickupId: number, collectorId: number): Promise<Pickup> {
+    const pickup = this.pickups.get(pickupId);
+    if (!pickup) throw new Error("Pickup not found");
+    const updatedPickup = { ...pickup, collectorId };
+    this.pickups.set(pickupId, updatedPickup);
+    return updatedPickup;
   }
 }
 

@@ -31,6 +31,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(pickups);
   });
 
+  app.get("/api/pickups/available", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    if (req.user.role !== "collector") return res.sendStatus(403);
+    const pickups = await storage.getAvailablePickups();
+    res.json(pickups);
+  });
+
+  app.patch("/api/pickups/:id/assign", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    if (req.user.role !== "collector") return res.sendStatus(403);
+    const pickup = await storage.assignPickup(parseInt(req.params.id), req.user.id);
+    res.json(pickup);
+  });
+
   app.patch("/api/pickups/:id/status", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     const { status } = req.body;
