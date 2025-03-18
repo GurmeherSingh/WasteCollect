@@ -198,6 +198,40 @@ export class MemStorage implements IStorage {
     this.pickups.set(pickupId, updatedPickup);
     return updatedPickup;
   }
+
+  // Marketplace methods
+  private marketplaceItems = new Map<number, MarketplaceItem>();
+
+  async getMarketplaceItems(): Promise<MarketplaceItem[]> {
+    return Array.from(this.marketplaceItems.values());
+  }
+
+  async getMarketplaceItem(id: number): Promise<MarketplaceItem | undefined> {
+    return this.marketplaceItems.get(id);
+  }
+
+  async redeemMarketplaceItem(userId: number, itemId: number): Promise<void> {
+    const item = await this.getMarketplaceItem(itemId);
+    if (!item) throw new Error("Item not found");
+    
+    const user = await this.getUser(userId);
+    if (!user) throw new Error("User not found");
+
+    if (user.rewardPoints < item.pointsCost) {
+      throw new Error("Insufficient points");
+    }
+
+    // Deduct points
+    await this.updateUserPoints(userId, -item.pointsCost);
+    
+    // Add transaction record
+    await this.addPoints(
+      userId,
+      -item.pointsCost,
+      'reward_redemption',
+      `Redeemed ${item.name}`
+    );
+  }
 }
 
 export const storage = new MemStorage();
