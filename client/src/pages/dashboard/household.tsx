@@ -47,7 +47,34 @@ export default function HouseholdDashboard() {
               <CardTitle>Schedule Pickup</CardTitle>
             </CardHeader>
             <CardContent>
-              <Button>Schedule New Pickup</Button>
+              <SchedulePickupDialog />
+              <div className="mt-4">
+                <h3 className="font-medium mb-2">Your Pickups</h3>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Quantity</TableHead>
+                      <TableHead>Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {pickups?.map((pickup) => (
+                      <TableRow key={pickup.id}>
+                        <TableCell>
+                          {new Date(pickup.scheduledDate).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>{pickup.wasteType}</TableCell>
+                        <TableCell>{pickup.quantity} kg</TableCell>
+                        <TableCell>
+                          <Badge>{pickup.status}</Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
 
