@@ -25,7 +25,7 @@ WasteCollect aims to make recycling easier while rewarding users for their envir
 This application was created as part of my startup idea for **ENTR210: Intro to Entrepreneurship** class.
 
 ## 🌐 Live Demo
-Check out the live version of the app here: WasteCollect App
+Check out the live version of the app here: [WasteCollect App](https://wastecollect.onrender.com)
 
 ## 🛠️ Technology Stack
 
