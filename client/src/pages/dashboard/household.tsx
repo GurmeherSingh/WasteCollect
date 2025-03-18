@@ -16,10 +16,11 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Star, Calendar } from "lucide-react";
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
+import { useLocation } from "wouter";
 
 export default function HouseholdDashboard() {
   const { user } = useAuth();
-  const { path } = usePath();
+  const [path] = useLocation();
 
 
   const { data: pickups } = useQuery({
@@ -157,7 +158,3 @@ export default function HouseholdDashboard() {
   );
 }
 
-function usePath() {
-  const router = useRouter();
-  return { path: router.pathname };
-}
