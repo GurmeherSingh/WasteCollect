@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -38,6 +38,27 @@ export const requirements = pgTable("requirements", {
   price: integer("price").notNull(),
 });
 
+export const pointTransactions = pgTable("point_transactions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  points: integer("points").notNull(),
+  type: text("type", { 
+    enum: ['pickup_scheduled', 'pickup_completed', 'recycling_milestone', 'bonus']
+  }).notNull(),
+  description: text("description").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const achievements = pgTable("achievements", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  type: text("type", {
+    enum: ['first_pickup', 'ten_pickups', 'hundred_points', 'consistent_recycler']
+  }).notNull(),
+  unlockedAt: timestamp("unlocked_at").defaultNow().notNull(),
+  pointsAwarded: integer("points_awarded").notNull(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -47,8 +68,12 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export const insertPickupSchema = createInsertSchema(pickups);
 export const insertRequirementSchema = createInsertSchema(requirements);
+export const insertPointTransactionSchema = createInsertSchema(pointTransactions);
+export const insertAchievementSchema = createInsertSchema(achievements);
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type Pickup = typeof pickups.$inferSelect;
 export type Requirement = typeof requirements.$inferSelect;
+export type PointTransaction = typeof pointTransactions.$inferSelect;
+export type Achievement = typeof achievements.$inferSelect;

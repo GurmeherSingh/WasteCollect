@@ -35,6 +35,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     const { status } = req.body;
     const pickup = await storage.updatePickupStatus(parseInt(req.params.id), status);
+
+    // Award points for completed pickups
+    if (status === 'completed') {
+      await storage.addPoints(
+        pickup.userId,
+        50,
+        'pickup_completed',
+        'Pickup completed successfully'
+      );
+
+      // Check for achievements
+      const userPickups = await storage.getPickupsByUser(pickup.userId);
+      if (userPickups.length === 1) {
+        await storage.unlockAchievement(pickup.userId, 'first_pickup', 100);
+      } else if (userPickups.length === 10) {
+        await storage.unlockAchievement(pickup.userId, 'ten_pickups', 500);
+      }
+    }
+
     res.json(pickup);
   });
 
@@ -62,6 +81,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (req.user.role !== "admin") return res.sendStatus(403);
     const users = await storage.getUsersByRole(req.params.role);
     res.json(users);
+  });
+
+  // Points and Achievements routes
+  app.get("/api/points/history", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const history = await storage.getPointHistory(req.user.id);
+    res.json(history);
+  });
+
+  app.get("/api/achievements", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const achievements = await storage.getAchievements(req.user.id);
+    res.json(achievements);
   });
 
   const httpServer = createServer(app);

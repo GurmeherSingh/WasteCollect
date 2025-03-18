@@ -11,12 +11,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Trophy, Star, Calendar } from "lucide-react";
 
 export default function HouseholdDashboard() {
   const { user } = useAuth();
-  
+
   const { data: pickups } = useQuery({
     queryKey: ["/api/pickups/user"],
+  });
+
+  const { data: pointHistory } = useQuery({
+    queryKey: ["/api/points/history"],
+  });
+
+  const { data: achievements } = useQuery({
+    queryKey: ["/api/achievements"],
   });
 
   return (
@@ -25,7 +35,8 @@ export default function HouseholdDashboard() {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Household Dashboard</h1>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Reward Points:</span>
+            <Star className="h-5 w-5 text-yellow-500" />
+            <span className="text-sm text-gray-600">Points:</span>
             <span className="font-semibold">{user?.rewardPoints}</span>
           </div>
         </div>
@@ -42,32 +53,73 @@ export default function HouseholdDashboard() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Recent Pickups</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-primary" />
+                Achievements
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {pickups?.map((pickup) => (
-                    <TableRow key={pickup.id}>
-                      <TableCell>
-                        {new Date(pickup.scheduledDate).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>{pickup.wasteType}</TableCell>
-                      <TableCell>{pickup.status}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <div className="space-y-4">
+                {achievements?.map((achievement) => (
+                  <div
+                    key={achievement.id}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <div>
+                      <p className="font-medium capitalize">
+                        {achievement.type.split('_').join(' ')}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        +{achievement.pointsAwarded} points
+                      </p>
+                    </div>
+                    <Badge variant="secondary">
+                      {new Date(achievement.unlockedAt).toLocaleDateString()}
+                    </Badge>
+                  </div>
+                ))}
+                {(!achievements || achievements.length === 0) && (
+                  <p className="text-sm text-gray-600">
+                    Complete pickups to unlock achievements!
+                  </p>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-primary" />
+              Recent Activity
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Activity</TableHead>
+                  <TableHead>Points</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {pointHistory?.map((transaction) => (
+                  <TableRow key={transaction.id}>
+                    <TableCell>
+                      {new Date(transaction.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>{transaction.description}</TableCell>
+                    <TableCell className="font-medium">
+                      +{transaction.points}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );

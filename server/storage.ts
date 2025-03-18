@@ -1,4 +1,4 @@
-import { User, InsertUser, Pickup, Requirement } from "@shared/schema";
+import { User, InsertUser, Pickup, Requirement, PointTransaction, Achievement } from "@shared/schema";
 import createMemoryStore from "memorystore";
 import session from "express-session";
 
@@ -16,12 +16,28 @@ export interface IStorage {
   createRequirement(requirement: Omit<Requirement, "id">): Promise<Requirement>;
   getRequirements(): Promise<Requirement[]>;
   sessionStore: session.Store;
+  addPoints(
+    userId: number,
+    points: number,
+    type: string,
+    description: string
+  ): Promise<PointTransaction>;
+  getPointHistory(userId: number): Promise<PointTransaction[]>;
+  updateUserPoints(userId: number, points: number): Promise<User>;
+  unlockAchievement(
+    userId: number,
+    type: string,
+    pointsAwarded: number
+  ): Promise<Achievement>;
+  getAchievements(userId: number): Promise<Achievement[]>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private pickups: Map<number, Pickup>;
   private requirements: Map<number, Requirement>;
+  private pointTransactions: Map<number, PointTransaction>;
+  private achievements: Map<number, Achievement>;
   sessionStore: session.Store;
   currentId: number;
 
@@ -29,6 +45,8 @@ export class MemStorage implements IStorage {
     this.users = new Map();
     this.pickups = new Map();
     this.requirements = new Map();
+    this.pointTransactions = new Map();
+    this.achievements = new Map();
     this.currentId = 1;
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000,
@@ -92,6 +110,77 @@ export class MemStorage implements IStorage {
 
   async getRequirements(): Promise<Requirement[]> {
     return Array.from(this.requirements.values());
+  }
+
+  async addPoints(
+    userId: number,
+    points: number,
+    type: string,
+    description: string
+  ): Promise<PointTransaction> {
+    const id = this.currentId++;
+    const transaction: PointTransaction = {
+      id,
+      userId,
+      points,
+      type,
+      description,
+      createdAt: new Date(),
+    };
+    this.pointTransactions.set(id, transaction);
+
+    await this.updateUserPoints(userId, points);
+
+    return transaction;
+  }
+
+  async getPointHistory(userId: number): Promise<PointTransaction[]> {
+    return Array.from(this.pointTransactions.values())
+      .filter(tx => tx.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async updateUserPoints(userId: number, pointsToAdd: number): Promise<User> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error("User not found");
+
+    const updatedUser = {
+      ...user,
+      rewardPoints: (user.rewardPoints || 0) + pointsToAdd,
+    };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+
+  async unlockAchievement(
+    userId: number,
+    type: string,
+    pointsAwarded: number
+  ): Promise<Achievement> {
+    const id = this.currentId++;
+    const achievement: Achievement = {
+      id,
+      userId,
+      type,
+      unlockedAt: new Date(),
+      pointsAwarded,
+    };
+    this.achievements.set(id, achievement);
+
+    await this.addPoints(
+      userId,
+      pointsAwarded,
+      'bonus',
+      `Achievement unlocked: ${type}`
+    );
+
+    return achievement;
+  }
+
+  async getAchievements(userId: number): Promise<Achievement[]> {
+    return Array.from(this.achievements.values())
+      .filter(achievement => achievement.userId === userId)
+      .sort((a, b) => b.unlockedAt.getTime() - a.unlockedAt.getTime());
   }
 }
 
