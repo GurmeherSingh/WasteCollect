@@ -10,15 +10,18 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
+import { SiPuma, SiStarbucks, SiAmazon, SiTarget, SiNike, SiAdidas, SiMcdonalds } from 'react-icons/si';
+import { GiHerbsBundle } from 'react-icons/gi';
+
 const BRANDS = [
-  { id: 1, name: "Nike", logo: "https://cdn-icons-png.flaticon.com/512/732/732084.png" },
-  { id: 2, name: "Adidas", logo: "https://cdn-icons-png.flaticon.com/512/731/731962.png" },
-  { id: 3, name: "Puma", logo: "https://www.cleanpng.com/png-puma-herzogenaurach-clothing-2359724/download.html" },
-  { id: 4, name: "iHerb", logo: "https://cdn-icons-png.flaticon.com/512/2382/2382533.png" },
-  { id: 5, name: "McDonald's", logo: "https://cdn-icons-png.flaticon.com/512/732/732217.png" },
-  { id: 6, name: "Starbucks", logo: "https://cdn-icons-png.flaticon.com/512/732/732242.png" },
-  { id: 7, name: "Amazon", logo: "https://cdn-icons-png.flaticon.com/512/732/732207.png" },
-  { id: 8, name: "Target", logo: "https://cdn-icons-png.flaticon.com/512/732/732251.png" }
+  { id: 1, name: "Nike", Icon: SiNike },
+  { id: 2, name: "Adidas", Icon: SiAdidas },
+  { id: 3, name: "Puma", Icon: SiPuma },
+  { id: 4, name: "iHerb", Icon: GiHerbsBundle },
+  { id: 5, name: "McDonald's", Icon: SiMcdonalds },
+  { id: 6, name: "Starbucks", Icon: SiStarbucks },
+  { id: 7, name: "Amazon", Icon: SiAmazon },
+  { id: 8, name: "Target", Icon: SiTarget }
 ];
 
 export default function MarketplaceDashboard() {
@@ -89,7 +92,7 @@ export default function MarketplaceDashboard() {
               <Card key={brand.id} className="bg-white/80 border-green-100 hover:shadow-lg transition-all">
                 <CardHeader className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <img src={brand.logo} alt={brand.name} className="w-12 h-12 object-contain" />
+                    <brand.Icon className="w-8 h-8 text-gray-800" />
                     <span className="text-sm text-green-600 font-medium">Featured</span>
                   </div>
                   <CardTitle className="text-xl text-green-800">{brand.name}</CardTitle>
