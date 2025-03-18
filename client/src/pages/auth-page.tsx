@@ -34,7 +34,7 @@ export default function AuthPage() {
             <CardTitle className="text-2xl font-bold">
               <div className="flex items-center gap-2">
                 <RecycleIcon className="h-6 w-6 text-primary" />
-                Waste Management Platform
+                WasteCollect
               </div>
             </CardTitle>
           </CardHeader>

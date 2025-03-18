@@ -12,7 +12,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <RecycleIcon className="h-6 w-6 text-primary" />
-            <span className="font-semibold">Waste Management</span>
+            <span className="font-semibold">WasteCollect</span>
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-600">
