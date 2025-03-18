@@ -47,6 +47,11 @@ export default function HouseholdDashboard() {
           </div>
         </div>
 
+        <div className="flex justify-end mb-4">
+          <Button asChild className="bg-green-500 hover:bg-green-600">
+            <Link to="/marketplace">View Rewards Marketplace</Link>
+          </Button>
+        </div>
         <div className="grid md:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
@@ -157,4 +162,3 @@ export default function HouseholdDashboard() {
     </DashboardLayout>
   );
 }
-
