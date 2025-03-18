@@ -186,7 +186,9 @@ export class MemStorage implements IStorage {
   }
 
   async getAvailablePickups(): Promise<Pickup[]> {
-    return Array.from(this.pickups.values()).filter(pickup => pickup.collectorId === null);
+    return Array.from(this.pickups.values()).filter(
+      pickup => !pickup.collectorId && pickup.status === "scheduled"
+    );
   }
 
   async assignPickup(pickupId: number, collectorId: number): Promise<Pickup> {
