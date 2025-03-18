@@ -6,10 +6,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { useState } from "react";
+
+const BRANDS = [
+  { id: 1, name: "Nike", logo: "https://cdn-icons-png.flaticon.com/512/732/732084.png" },
+  { id: 2, name: "Adidas", logo: "https://cdn-icons-png.flaticon.com/512/731/731962.png" },
+  { id: 3, name: "Puma", logo: "https://cdn-icons-png.flaticon.com/512/731/731966.png" },
+  { id: 4, name: "iHerb", logo: "https://cdn-icons-png.flaticon.com/512/2382/2382533.png" },
+  { id: 5, name: "McDonald's", logo: "https://cdn-icons-png.flaticon.com/512/732/732217.png" },
+  { id: 6, name: "Starbucks", logo: "https://cdn-icons-png.flaticon.com/512/732/732242.png" },
+  { id: 7, name: "Amazon", logo: "https://cdn-icons-png.flaticon.com/512/732/732207.png" },
+  { id: 8, name: "Target", logo: "https://cdn-icons-png.flaticon.com/512/732/732251.png" }
+];
 
 export default function MarketplaceDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: items } = useQuery({
     queryKey: ["/api/marketplace"],
@@ -27,7 +42,7 @@ export default function MarketplaceDashboard() {
       queryClient.invalidateQueries({ queryKey: ["/api/marketplace"] });
       toast({
         title: "Success",
-        description: "Item redeemed successfully!",
+        description: "Coupon redeemed successfully!",
       });
     },
     onError: (error: Error) => {
@@ -39,51 +54,63 @@ export default function MarketplaceDashboard() {
     },
   });
 
+  const filteredBrands = BRANDS.filter(brand => 
+    brand.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Rewards Marketplace</h1>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Your Points:</span>
-            <span className="font-semibold">{user?.rewardPoints}</span>
+      <div className="min-h-screen bg-gradient-to-br from-green-50/30 to-emerald-50/30 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto p-6 space-y-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-green-800">Rewards Marketplace</h1>
+              <p className="text-green-600 mt-2">Redeem your points for exclusive deals</p>
+            </div>
+            <div className="flex items-center gap-4 bg-white/80 p-3 rounded-lg shadow-sm">
+              <span className="text-sm text-green-700">Available Points:</span>
+              <span className="text-2xl font-bold text-green-800">{user?.rewardPoints}</span>
+            </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {items?.map((item) => (
-            <Card key={item.id}>
-              <CardHeader>
-                <CardTitle>{item.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {item.imageUrl && (
-                  <img 
-                    src={item.imageUrl} 
-                    alt={item.name}
-                    className="w-full h-48 object-cover rounded-md"
-                  />
-                )}
-                <p className="text-gray-600">{item.description}</p>
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">{item.pointsCost} points</span>
-                  <Button
-                    onClick={() => redeemMutation.mutate(item.id)}
-                    disabled={
-                      user?.rewardPoints < item.pointsCost ||
-                      item.stockQuantity === 0 ||
-                      redeemMutation.isPending
-                    }
-                  >
-                    Redeem
-                  </Button>
-                </div>
-                <div className="text-sm text-gray-500">
-                  {item.stockQuantity} left in stock
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-500" />
+            <Input
+              type="text"
+              placeholder="Search brands..."
+              className="pl-10 bg-white/80 border-green-200 focus:border-green-500"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredBrands.map((brand) => (
+              <Card key={brand.id} className="bg-white/80 border-green-100 hover:shadow-lg transition-all">
+                <CardHeader className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <img src={brand.logo} alt={brand.name} className="w-12 h-12 object-contain" />
+                    <span className="text-sm text-green-600 font-medium">Featured</span>
+                  </div>
+                  <CardTitle className="text-xl text-green-800">{brand.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold text-green-700">20% OFF</span>
+                      <Button 
+                        onClick={() => redeemMutation.mutate(brand.id)}
+                        className="bg-green-500 hover:bg-green-600"
+                      >
+                        Redeem
+                      </Button>
+                    </div>
+                    <div className="text-sm text-green-600">Valid until Dec 31, 2024</div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </DashboardLayout>
